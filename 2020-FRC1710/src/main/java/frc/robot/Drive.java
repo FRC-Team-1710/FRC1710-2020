@@ -23,9 +23,9 @@ public class Drive {
     public static InputSmoother leftIN, rightIN;
     public static void Driveinit(){
         CANSparkMax R1 = new CANSparkMax(1, MotorType.kBrushless);
-        CANSparkMax R2 = new CANSparkMax(2, MotorType.kBrushless);
+        CANSparkMax R2 = new CANSparkMax(4, MotorType.kBrushless);
         CANSparkMax L1 = new CANSparkMax(3, MotorType.kBrushless);
-        CANSparkMax L2 = new CANSparkMax(4, MotorType.kBrushless);
+        CANSparkMax L2 = new CANSparkMax(2, MotorType.kBrushless);
         turnFactor = .25;
         forwardFactor = .5;
         leftIN = new InputSmoother(1, -1);
