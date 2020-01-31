@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
+  public static XboxController driverController;
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
@@ -117,7 +118,17 @@ public class Robot extends TimedRobot {
           break;
         }
       }
-  }
+      Limelight.limelight_periodic();
+    
+      if(driverController.getBumperPressed(Hand.kRight)) {
+        Limelight.rpm += 100;//might need to increase for faster adjustments
+      }else if(driverController.getBumperPressed(Hand.kLeft)){
+        Limelight.rpm -= 100;//might need to decrease for faster adjustments
+      }else if(driverController.getBButtonPressed()){
+        Limelight.rpm = 0;
+      }
+      Flywheel.flywheel_periodic(Limelight.rpm);
+    }
 
   /**
    * This function is called periodically during test mode.
