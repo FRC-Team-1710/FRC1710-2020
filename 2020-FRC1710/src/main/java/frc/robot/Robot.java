@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     AHRS Navx = new AHRS();
+    Drive.Driveinit();
     XboxController DriveStick = new XboxController(0);
     XboxController MechStick = new XboxController(1);
   }
@@ -97,8 +98,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double xAxisDemand = DriveStick.getX(Hand.kRight);
     double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
-    Drive.R1.set(xAxisDemand + yAxisDemand);
-    Drive.L1.set(xAxisDemand - yAxisDemand);
+    boolean xStickButton = DriveStick.getStickButton(Hand.kRight);
+    Drive.arcade_drive(xAxisDemand, yAxisDemand, xStickButton);
    
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
