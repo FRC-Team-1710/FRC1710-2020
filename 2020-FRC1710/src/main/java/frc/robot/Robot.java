@@ -29,8 +29,9 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  public XboxController DriveStick, MechStick;
-  public AHRS Navx;
+  public static XboxController DriveStick, MechStick;
+  
+  public static AHRS Navx;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -42,8 +43,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
     AHRS Navx = new AHRS();
     Drive.Driveinit();
-    XboxController DriveStick = new XboxController(0);
-    XboxController MechStick = new XboxController(1);
+    DriveStick = new XboxController(0);
+    MechStick = new XboxController(1);
   }
 
   /**
@@ -120,14 +121,14 @@ public class Robot extends TimedRobot {
       }
       Limelight.limelight_periodic();
     
-      if(driverController.getBumperPressed(Hand.kRight)) {
-        Limelight.rpm += 100;//might need to increase for faster adjustments
-      }else if(driverController.getBumperPressed(Hand.kLeft)){
-        Limelight.rpm -= 100;//might need to decrease for faster adjustments
-      }else if(driverController.getBButtonPressed()){
-        Limelight.rpm = 0;
-      }
-      Flywheel.flywheel_periodic(Limelight.rpm);
+      // if(driverController.getBumperPressed(Hand.kRight)) {
+      //   Limelight.rpm += 100;//might need to increase for faster adjustments
+      // }else if(driverController.getBumperPressed(Hand.kLeft)){
+      //   Limelight.rpm -= 100;//might need to decrease for faster adjustments
+      // }else if(driverController.getBButtonPressed()){
+      //   Limelight.rpm = 0;
+      // }
+      // Flywheel.flywheel_periodic(Limelight.rpm);
     }
 
   /**
