@@ -43,8 +43,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
     AHRS Navx = new AHRS();
     Drive.Driveinit();
+    LEDs.initLEDs();
     DriveStick = new XboxController(0);
     MechStick = new XboxController(1);
+    LEDs.setIncramentBall();
   }
 
   /**
