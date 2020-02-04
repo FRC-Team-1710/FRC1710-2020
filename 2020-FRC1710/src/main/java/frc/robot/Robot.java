@@ -43,10 +43,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
     AHRS Navx = new AHRS();
     Drive.Driveinit();
-    LEDs.initLEDs();
+    //LEDs.initLEDs();
     DriveStick = new XboxController(0);
     MechStick = new XboxController(1);
-    LEDs.setIncramentBall();
+    //LEDs.setIncramentBall();
   }
 
   /**
@@ -102,8 +102,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     double xAxisDemand = DriveStick.getX(Hand.kRight);
     double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
-    boolean xStickButton = DriveStick.getStickButton(Hand.kRight);
-    Drive.arcade_drive(xAxisDemand, yAxisDemand, xStickButton);
+    boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
+    SmartDashboard.putBoolean("is shifting?", xAxsisButton);
+    Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
    
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
@@ -121,7 +122,7 @@ public class Robot extends TimedRobot {
           break;
         }
       }
-      Limelight.limelight_periodic();
+      //Limelight.limelight_periodic();
     
       // if(driverController.getBumperPressed(Hand.kRight)) {
       //   Limelight.rpm += 100;//might need to increase for faster adjustments

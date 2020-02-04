@@ -30,9 +30,9 @@ public class InputSmoother {
      */
     public double smoothInput(double input) {
         
-        double rate = SmartDashboard.getNumber("smooth inc", .15);
+        
      
-        outputTotal = outputTotal + input * rate;
+        outputTotal = outputTotal + input * .00000000000000000000000000000000001;
         outputTotal = Math.min(Math.max(input, lowerBound), upperBound);
         SmartDashboard.putNumber("smooth drive", outputTotal);
         return outputTotal;

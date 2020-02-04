@@ -7,17 +7,21 @@
 
 package frc.robot;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Solenoid;
+//import jdk.internal.jshell.tool.resources.version;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
  */
 public class Drive {
     public static CANSparkMax R1,R2, L1, L2;
+    public static CANEncoder rDrive, lDrive;
     public static Solenoid shifters;
     public static double turnFactor, forwardFactor;
     public static InputSmoother leftIN, rightIN;
@@ -26,6 +30,10 @@ public class Drive {
         R2 = new CANSparkMax(4, MotorType.kBrushless);
         L1 = new CANSparkMax(3, MotorType.kBrushless);
         L2 = new CANSparkMax(2, MotorType.kBrushless);
+        R1.restoreFactoryDefaults();
+        L2.restoreFactoryDefaults();
+        L1.restoreFactoryDefaults();
+        R2.restoreFactoryDefaults();
         turnFactor = .25;
         forwardFactor = .5;
         leftIN = new InputSmoother(1, -1);
@@ -38,13 +46,20 @@ public class Drive {
         L1.setIdleMode(IdleMode.kBrake);
         L2.setIdleMode(IdleMode.kBrake);
     }
-    public static void arcade_drive(double turnPower, double forwardPower, boolean elctricShift){
-        if(elctricShift = true){
-            forwardFactor = 1;
+    public static void arcadeDrive(double forwardPower, double turnPower, boolean Boost){
+        double speedScale = 0.5;
+        if(Boost){
+            speedScale = 1.0;
         } else {
-            forwardFactor = .5;
+            speedScale = 0.5;
         }
-        Drive.R1.set(rightIN.smoothInput((turnPower * turnFactor) + forwardPower));
-        Drive.L1.set(leftIN.smoothInput((turnPower * turnFactor) - forwardPower));
+        forwardPower = speedScale * forwardPower;
+        SmartDashboard.putNumber("FWD POWER!", forwardPower);
+        SmartDashboard.putNumber("smooth FWD POWER!", leftIN.smoothInput(forwardPower));
+        //SmartDashboard.putNumber(   "Velocity_X",           navx.getVelocityX());
+        //  SmartDashboard.putNumber(   "Velocity_Y",           navx.getVelocityY());
+        L1.set(leftIN.smoothInput(turnPower + forwardPower));
+        R1.set(rightIN.smoothInput(turnPower - forwardPower));
     }
+
 }
