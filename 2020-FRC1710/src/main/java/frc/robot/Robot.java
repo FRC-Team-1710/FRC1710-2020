@@ -9,6 +9,8 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,8 +32,9 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   public static XboxController DriveStick, MechStick;
-  
+  public static LidarLitePWM DistanceLidar;
   public static AHRS Navx;
+  public static DigitalInput LidarPWMSlot;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -43,10 +46,14 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
     AHRS Navx = new AHRS();
     Drive.Driveinit();
-    //LEDs.initLEDs();
+    LEDs.initLEDs();
     DriveStick = new XboxController(0);
     MechStick = new XboxController(1);
-    //LEDs.setIncramentBall();
+    LidarPWMSlot = new DigitalInput(0);
+    DistanceLidar = new LidarLitePWM(LidarPWMSlot);
+    
+    LEDs.setIncramentBall();
+    
   }
 
   /**
@@ -105,7 +112,7 @@ public class Robot extends TimedRobot {
     boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
     SmartDashboard.putBoolean("is shifting?", xAxsisButton);
     Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
-   
+    SmartDashboard.putNumber("lidar distance in inches",DistanceLidar.getDistance()/2.54); //the /2.54 is the conversion factor for cm to inches
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
       if(gameData.length()>0){
@@ -122,7 +129,7 @@ public class Robot extends TimedRobot {
           break;
         }
       }
-      //Limelight.limelight_periodic();
+      Limelight.limelight_periodic();
     
       // if(driverController.getBumperPressed(Hand.kRight)) {
       //   Limelight.rpm += 100;//might need to increase for faster adjustments
