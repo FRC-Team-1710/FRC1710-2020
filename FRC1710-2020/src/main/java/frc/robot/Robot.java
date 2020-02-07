@@ -7,9 +7,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,6 +26,7 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  public XboxController motor1Controller;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -33,6 +37,8 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    motor1Controller = new XboxController(0);
+    Intake.Intakeinit();
   }
 
   /**
@@ -86,6 +92,25 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    // double xAxisDemand = motor1Controller.getX(Hand.kLeft); // controlling wheel motor with left joystick
+    double yAxisDemand = motor1Controller.getY(Hand.kRight); // controlling hinge motor with right joystick
+
+
+    Intake.IntakeBall(yAxisDemand);
+
+    // Assigns x button to open and close DoubleSolenoid
+    if (motor1Controller.getXButtonPressed()) {
+      Intake.clawMover.set(Value.kForward);
+      Intake.piston2.set(Value.kForward);
+
+    }  else {
+      Intake.clawMover.set(Value.kReverse);
+      Intake.piston2.set(Value.kReverse);
+     
+    }
+    
+    SmartDashboard.putNumber("Intake Power", Intake.intakeWheels.get());   
+   
   }
 
   /**
