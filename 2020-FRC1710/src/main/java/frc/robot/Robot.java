@@ -45,14 +45,14 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
     AHRS Navx = new AHRS();
-    Drive.Driveinit();
-    LEDs.initLEDs();
+    //Drive.Driveinit();
+    //LEDs.initLEDs();
     DriveStick = new XboxController(0);
     MechStick = new XboxController(1);
     LidarPWMSlot = new DigitalInput(0);
     DistanceLidar = new LidarLitePWM(LidarPWMSlot);
     
-    LEDs.setIncramentBall();
+    //LEDs.setIncramentBall();
     
   }
 
@@ -107,11 +107,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    double xAxisDemand = DriveStick.getX(Hand.kRight);
-    double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
-    boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
-    SmartDashboard.putBoolean("is shifting?", xAxsisButton);
-    Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
+    // double xAxisDemand = DriveStick.getX(Hand.kRight);
+    // double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
+    // boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
+    // SmartDashboard.putBoolean("is shifting?", xAxsisButton);
+    // Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
     SmartDashboard.putNumber("lidar distance in inches",DistanceLidar.getDistance()/2.54); //the /2.54 is the conversion factor for cm to inches
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
