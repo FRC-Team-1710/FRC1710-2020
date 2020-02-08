@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
           break;
         }
       }
-      Limelight.limelight_periodic();
+      //Limelight.limelight_periodic();
     
       // if(driverController.getBumperPressed(Hand.kRight)) {
       //   Limelight.rpm += 100;//might need to increase for faster adjustments
