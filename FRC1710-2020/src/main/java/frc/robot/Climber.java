@@ -1,14 +1,19 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-/**
- * Add your docs here.
- */
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+
 public class Climber {
+
+    public static CANSparkMax Climb;
+    public static int PCM_CAN_ID = 33;
+
+    public static void ClimbControl (double power) {
+        Climb.set(power);
+    }
+
+    public static void Climberinit () {
+        Climb = new CANSparkMax (PCM_CAN_ID, MotorType.kBrushless);
+    }
 }

@@ -8,25 +8,29 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.buttons.Trigger;
+import edu.wpi.first.wpilibj.buttons.Trigger.ButtonScheduler;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
+
+
+
 public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   public XboxController motor1Controller;
+  public static boolean pressAButton, pressBButton;
+  
 
   /**
    * This function is run when the robot is first started up and should be
@@ -36,10 +40,17 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    SmartDashboard.putData("Auto choices", m_chooser);   
     motor1Controller = new XboxController(0);
-    Intake.Intakeinit();
+    //Intake.Intakeinit();
+    // Pixy.Pixyinit();
+    // Climber.Climberinit();
+    pressAButton = false;
+    pressBButton = false;
+
   }
+  
+  
 
   /**
    * This function is called every robot packet, no matter the mode. Use
@@ -51,6 +62,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    
   }
 
   /**
@@ -71,6 +83,8 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + m_autoSelected);
   }
 
+  
+
   /**
    * This function is called periodically during autonomous.
    */
@@ -87,31 +101,69 @@ public class Robot extends TimedRobot {
     }
   }
 
+  @Override
+  public void teleopInit() {
+    super.teleopInit();
+    ColorWheel.ColorWheelinit();
+  }
+
   /**
    * This function is called periodically during operator control.
    */
   @Override
   public void teleopPeriodic() {
-    // double xAxisDemand = motor1Controller.getX(Hand.kLeft); // controlling wheel motor with left joystick
-    double yAxisDemand = motor1Controller.getY(Hand.kRight); // controlling hinge motor with right joystick
+     //final double yAxisDemand = motor1Controller.getY(Hand.kRight); // controlling hinge motor with right joystick
+    //final double Trigger = motor1Controller.getTriggerAxis(Hand.kLeft); // Controlling control panel spinner with left trigger
+     // final double yAxisDemand2 = motor1Controller.getY(Hand.kLeft); // Controlling climber to go up and down
 
+    //Intake.IntakeBall(yAxisDemand);
+    //ColorWheel.panelWheel(Trigger);
+    // Climber.ClimbControl(yAxisDemand2);
+    //ColorWheel.RunStage2();
+    //ColorWheel.RunStage3();
 
-    Intake.IntakeBall(yAxisDemand);
-
-    // Assigns x button to open and close DoubleSolenoid
-    if (motor1Controller.getXButtonPressed()) {
-      Intake.clawMover.set(Value.kForward);
-      Intake.piston2.set(Value.kForward);
-
-    }  else {
-      Intake.clawMover.set(Value.kReverse);
-      Intake.piston2.set(Value.kReverse);
-     
-    }
     
-    SmartDashboard.putNumber("Intake Power", Intake.intakeWheels.get());   
+    // Assigns left trigger to move colorwheel motor
+    // if (motor1Controller.getTriggerAxis(Hand.kLeft) > 0) {
+    //   ColorWheel.panelWheel.set(ControlMode.PercentOutput, motor1Controller.getTriggerAxis(Hand.kLeft));
+    // }
+
+    // Test comment
+    
+    //Scheduler.this.addButton(panelSpinner);
+
+
+     if (motor1Controller.getAButtonPressed()) {
+      pressAButton = true;
+     } 
+     if (pressAButton) {
+       pressAButton = ColorWheel.RunStage2();
+           }
+
+           
+     if (motor1Controller.getBButtonPressed()){
+       pressBButton = true;
+     }
+     if (pressBButton) {
+       pressBButton = ColorWheel.RunStage3();
+
+     }
+
+     }
+          // Assigns x button to open and close DoubleSolenoid
+    // if (motor1Controller.getXButtonPressed()) {
+       //Intake.clawMover.set(Value.kForward); // Opens solenoid
+       //Intake.piston2.set(Value.kForward); // Opens solenoid
+
+    // }  else {
+     // Intake.clawMover.set(Value.kReverse); // Closes Solenoid
+     // Intake.piston2.set(Value.kReverse); // Closes Solenoid
+
+
+   //  SmartDashboard.putNumber("Intake Power", Intake.intakeWheels.get());
+    
    
-  }
+ // }
 
   /**
    * This function is called periodically during test mode.
