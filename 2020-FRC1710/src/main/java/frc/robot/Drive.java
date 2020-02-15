@@ -38,8 +38,8 @@ public class Drive {
         forwardFactor = .5;
         leftIN = new InputSmoother(1, -1);
         rightIN = new InputSmoother(1, -1);
-        //R2.follow(R1);
-        //L2.follow(L1);
+        R2.follow(R1);
+        L2.follow(L1);
 
         R1.setIdleMode(IdleMode.kBrake);
         R2.setIdleMode(IdleMode.kBrake);
@@ -58,8 +58,8 @@ public class Drive {
         SmartDashboard.putNumber("smooth FWD POWER!", leftIN.smoothInput(forwardPower));
         //SmartDashboard.putNumber(   "Velocity_X",           navx.getVelocityX());
         //  SmartDashboard.putNumber(   "Velocity_Y",           navx.getVelocityY());
-        L1.set(leftIN.smoothInput(turnPower + forwardPower));
-        R1.set(rightIN.smoothInput(turnPower - forwardPower));
+        L1.set(turnPower + forwardPower);
+        R1.set(turnPower - forwardPower);
     }
 
 }
