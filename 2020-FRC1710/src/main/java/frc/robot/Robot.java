@@ -110,8 +110,12 @@ public class Robot extends TimedRobot {
      double xAxisDemand = DriveStick.getX(Hand.kRight);
      double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
      boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
+     double rTrig = DriveStick.getTriggerAxis(Hand.kRight);
+     boolean xButton = DriveStick.getXButton();
     // SmartDashboard.putBoolean("is shifting?", xAxsisButton);
+    Climber.climb(rTrig, xButton, true);
     Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
+    //Intake.gIntake(xButton);
     
     SmartDashboard.putNumber("lidar distance in inches",DistanceLidar.getDistance()/2.54); //the /2.54 is the conversion factor for cm to inches
     String gameData; 

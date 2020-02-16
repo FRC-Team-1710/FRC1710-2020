@@ -45,16 +45,16 @@ public class Climber {
         
     
     // compressor
-        compressor = new Compressor(51);
+        //compressor = new Compressor(51);
         
     }
     public static void climb(double pwr, boolean brakeBol,boolean Compress){
         climb1.set(ControlMode.PercentOutput, pwr * 1);
-        double hexPos = climb2.getSelectedSensorPosition(0);
+        //double hexPos = climb2.getSelectedSensorPosition(0);
         SmartDashboard.putNumber("position in rotations", hexPos/4000);
         SmartDashboard.putNumber("raw",  hexPos);
         SmartDashboard.putNumber("current draw from climb motors", myPDP.getCurrent(11));
-        compressor.setClosedLoopControl(Compress);
+        
         if (brakeBol) { brake.set(Value.kForward);} else {brake.set(Value.kReverse);}
 
     }
