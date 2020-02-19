@@ -47,19 +47,19 @@ public class Drive {
         L2.setIdleMode(IdleMode.kBrake);
     }
     public static void arcadeDrive(double forwardPower, double turnPower, boolean Boost){
-        double speedScale = 0.5;
+        double speedScale = 0.25;
         if(Boost){
             speedScale = 1.0;
         } else {
-            speedScale = 0.5;
+            speedScale = 0.25;
         }
         forwardPower = speedScale * forwardPower;
         SmartDashboard.putNumber("FWD POWER!", forwardPower);
         SmartDashboard.putNumber("smooth FWD POWER!", leftIN.smoothInput(forwardPower));
         //SmartDashboard.putNumber(   "Velocity_X",           navx.getVelocityX());
         //  SmartDashboard.putNumber(   "Velocity_Y",           navx.getVelocityY());
-        L1.set(turnPower + forwardPower);
-        R1.set(turnPower - forwardPower);
+        L1.set(leftIN.smoothInput(turnPower + forwardPower));
+        R1.set(rightIN.smoothInput(turnPower - forwardPower));
     }
 
 }

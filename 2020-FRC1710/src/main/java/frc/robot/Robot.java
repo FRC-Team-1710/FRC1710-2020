@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Compressor;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   public static LidarLitePWM DistanceLidar;
   public static AHRS Navx;
   public static DigitalInput LidarPWMSlot;
+  public static Compressor comp;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -51,7 +53,10 @@ public class Robot extends TimedRobot {
     MechStick = new XboxController(1);
     LidarPWMSlot = new DigitalInput(0);
     DistanceLidar = new LidarLitePWM(LidarPWMSlot);
-    
+    Intake.intakeInit();
+    comp = new Compressor(50);
+    Climber.climberInit();
+    Flywheel.initialize();
     //LEDs.setIncramentBall();
     
   }
@@ -111,13 +116,17 @@ public class Robot extends TimedRobot {
      double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
      boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
      double rTrig = DriveStick.getTriggerAxis(Hand.kRight);
+     double lTrig = DriveStick.getTriggerAxis(Hand.kLeft);
      boolean xButton = DriveStick.getXButton();
+     boolean yButton = DriveStick.getYButton();
     // SmartDashboard.putBoolean("is shifting?", xAxsisButton);
-    Climber.climb(rTrig, xButton, true);
+    Climber.climb(rTrig-lTrig, xButton);
     Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
-    //Intake.gIntake(xButton);
-    
+    Intake.gIntake(yButton);
+  
+    comp.setClosedLoopControl(DriveStick.getAButton());
     SmartDashboard.putNumber("lidar distance in inches",DistanceLidar.getDistance()/2.54); //the /2.54 is the conversion factor for cm to inches
+    
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
       if(gameData.length()>0){

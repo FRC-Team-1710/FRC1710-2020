@@ -48,7 +48,7 @@ public class Climber {
         //compressor = new Compressor(51);
         
     }
-    public static void climb(double pwr, boolean brakeBol,boolean Compress){
+    public static void climb(double pwr, boolean brakeBol){
         climb1.set(ControlMode.PercentOutput, pwr * 1);
         //double hexPos = climb2.getSelectedSensorPosition(0);
         SmartDashboard.putNumber("position in rotations", hexPos/4000);
