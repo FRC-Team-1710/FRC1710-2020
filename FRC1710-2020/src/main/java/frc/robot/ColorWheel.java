@@ -1,32 +1,20 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018 FIRST. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                                               */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-// import com.revrobotics.ColorSensorV3.RawColor;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-
-// import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.util.Color;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorSensorV3;
+import edu.wpi.first.wpilibj.util.Color;
+import com.revrobotics.ColorMatchResult;
+import edu.wpi.first.wpilibj.DriverStation;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ColorWheel {
-  // Class is intended to interact with {other classes}
-  // This class should provide {color value? etc.}
-  public static VictorSPX panelWheel; // names motor
- // public static int PCM_CAN_ID = 21;
+  //public static int Clockwise = 1;
+  public static int Counterclockwise = -1;
+  public static double Speed = 0.4;
+  public static TalonSRX panelWheel; // names motor
   // public final ColorMatch m_ColorMatcher = new ColorMatch();
   public static ColorSensorV3 colorSensor;
   public static Color detectedColor;
@@ -35,12 +23,12 @@ public class ColorWheel {
   public static ColorMatch colorMatcher;
 
 
-  public final static Color defaultColor = ColorMatch.makeColor(0, 0, 0);
-  public final static Color kBlueTarget = ColorMatch.makeColor(0.145, 0.438, 0.416); // Check color values at competition
-  public final static Color kGreenTarget = ColorMatch.makeColor(0.183, 0.564, 0.253);
-  public final static Color kRedTarget = ColorMatch.makeColor(0.488, 0.363, 0.149);
-  public final static Color kYellowTarget = ColorMatch.makeColor(0.321, 0.547, 0.132);
-  public static int counter;
+  public final static Color defaultColor = ColorMatch.makeColor(0, 0, 0); // Still check values at every competition
+  public final static Color kBlueTarget = ColorMatch.makeColor(0.145, 0.438, 0.416); // (0,255,255)
+  public final static Color kGreenTarget = ColorMatch.makeColor(0.192, 0.558, 0.250); // (0,255,0)
+  public final static Color kRedTarget = ColorMatch.makeColor(0.459, 0.367, 0.174); // (255,0,0)
+  public final static Color kYellowTarget = ColorMatch.makeColor(0.322, 0.555, 0.122); // (255,255,0)
+  public static int counter, elseCounter;
   
 
   public static void ColorWheelinit() {
@@ -50,7 +38,8 @@ public class ColorWheel {
     colorMatcher.addColorMatch(kRedTarget); // matches to red
     colorMatcher.addColorMatch(kYellowTarget); // matches to yellow
     colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-    panelWheel = new VictorSPX(21);
+    panelWheel = new TalonSRX(21);
+    elseCounter = 0;
     counter = 0;
     //alreadyCountedColor = false;
     //isFinishedStage2 = false;
@@ -65,28 +54,26 @@ public class ColorWheel {
 
   public static boolean RunStage2() {
     detectedColor = colorSensor.getColor();
-    //System.out.println("detectedColor " + detectedColor.red + ", " + detectedColor.green + ", " + detectedColor.blue );
-
     ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
-    // System.out.println("detectedColor " + match.color.red + ", " + match.color.green + ", " + match.color.blue + ", " + match.confidence);
+    SmartDashboard.putNumber("Red", detectedColor.red);
+    SmartDashboard.putNumber("Green", detectedColor.green);
+    SmartDashboard.putNumber("Blue", detectedColor.blue);
+    SmartDashboard.putNumber("Confidence", match.confidence);
 
-    if (match.confidence > 0.96) {
-      System.out.println(match.confidence);
-
+    if (match.confidence > 0.90) {
       if (startColor == defaultColor) {
         startColor = match.color;
-        // System.out.println(startColor);
-        panelWheel.set(ControlMode.PercentOutput, 0.4);
-        // double YES = 7;
-        // SmartDashboard.putNumber("Working", YES); 
-        
+        panelWheel.set(ControlMode.PercentOutput, -0.4);
         
       }
 
       if (previousColor != match.color) {
         if (previousColor == startColor) {
           counter++;
-          System.out.println(counter);
+          if(counter == 6) {
+            panelWheel.set(ControlMode.PercentOutput, -0.2);
+          }
+          SmartDashboard.putNumber("Counter", counter);
           if (counter >= 8) {
             panelWheel.set(ControlMode.PercentOutput, 0);
             return false;
@@ -95,82 +82,111 @@ public class ColorWheel {
        }
       }
       previousColor = match.color;
+    } else {
+      elseCounter++;
+      if (elseCounter > 50) {
+        panelWheel.set(ControlMode.PercentOutput, 0);
+        startColor = defaultColor;
+        previousColor = defaultColor;
+        elseCounter = 0;
+      }
+
     }
     return true;
   }
     
+  public static void reInit() {
+    counter = 0;
+    elseCounter = 0;
+    previousColor = defaultColor;
+    startColor = defaultColor;
+    panelWheel.set(ControlMode.PercentOutput, 0);
     
+  }
     
-  //   if (isFinishedStage2 == false) {  
-  //     panelWheel.set(ControlMode.PercentOutput, 0.5);
-      
-  //     if (match.color == detectedColor) { //kRedTarget
-  //       if (!alreadyCountedColor) { 
-  //         counter++;
-  //       }
-  //       alreadyCountedColor = true;
-  //     } else { // if (colorSensor.getColor() != kRedTarget) // != kRedTarget
-  //       alreadyCountedColor = false;
-  //     }
-  //     if (counter >= 7) { // Counts red color seven times and then the counter goes up one
-  //       if (match.color != detectedColor) {
-  //         isFinishedStage2 = true;
-  //       }
-  //     } 
-  //   } else { // if (isFinishedStage2)
-  //     panelWheel.set(ControlMode.PercentOutput, 0); // sets  motor to 0 after counter reaches 7
-  //   }
-  // }
-
+ 
 
    public static boolean RunStage3() {
      boolean returnValue;
      returnValue = true;
      detectedColor = colorSensor.getColor();
      ColorMatchResult match = colorMatcher.matchClosestColor(detectedColor);
-     if (match.confidence > 0.96) {
+     SmartDashboard.putNumber("Confidence", match.confidence);
+     if (match.confidence > 0.90) {
+       elseCounter = 0;
 
       String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
       if(gameData.length() > 0) {
         switch (gameData.charAt(0)) {
 
-          case 'B' :
-           System.out.println("detectedColor " + detectedColor.red + ", " + detectedColor.green + ", " + detectedColor.blue );
+          case 'B' :    
 
             if (match.color == kRedTarget) {
               panelWheel.set(ControlMode.PercentOutput, 0);
-            } else {
-              panelWheel.set(ControlMode.PercentOutput, 0.4);
               returnValue = false;
-            }   
+            } else { 
+              if (match.color == kYellowTarget) {
+                panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+              } else if (match.color == kBlueTarget) {
+                panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+              } else if (match.color == kGreenTarget) {
+                panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+              } else {
+              panelWheel.set(ControlMode.PercentOutput, 0.4); // here if all else fails
+              }
+            } 
             break;     
           
           case 'G' :
            if (match.color == kYellowTarget) {
-              panelWheel.set(ControlMode.PercentOutput, 0);  
-          } else {
+              panelWheel.set(ControlMode.PercentOutput, 0); 
+              returnValue = false; 
+          } else { 
+              if (match.color == kRedTarget) {
+                panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+              } else if (match.color == kBlueTarget) {
+                panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+              } else if (match.color == kGreenTarget) {
+                panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+              } else {
               panelWheel.set(ControlMode.PercentOutput, 0.4);
-              returnValue = false;
           } 
+        }
           break;   
 
           case 'R' :
            if (match.color == kBlueTarget) {
               panelWheel.set(ControlMode.PercentOutput, 0);
-            } else {
-              panelWheel.set(ControlMode.PercentOutput, 0.4);
               returnValue = false;
+            } else { 
+                if (match.color == kYellowTarget) {
+                  panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+                } else if (match.color == kRedTarget) {
+                  panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+                } else if (match.color == kGreenTarget) {
+                  panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+                } else {
+              panelWheel.set(ControlMode.PercentOutput, 0.4);
           }
+        }
           break;  
 
           case 'Y' :
            if (match.color == kGreenTarget) {
               panelWheel.set(ControlMode.PercentOutput, 0);
-           } else {
-              panelWheel.set(ControlMode.PercentOutput, 0.4);
               returnValue = false;
-           }
+          } else { 
+            if (match.color == kYellowTarget) {
+              panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+            } else if (match.color == kBlueTarget) {
+              panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+            } else if (match.color == kRedTarget) {
+              panelWheel.set(ControlMode.PercentOutput, Counterclockwise * Speed);
+            } else {
+              panelWheel.set(ControlMode.PercentOutput, 0.4);
+           } 
+          }
            break;  
           
           default :
@@ -178,7 +194,14 @@ public class ColorWheel {
              break;
 
 }
-}
+} 
+} else {
+  elseCounter++;
+  if (elseCounter >= 50) {
+    panelWheel.set(ControlMode.PercentOutput, 0);
+    elseCounter = 0;
+  }
+  
 }
     return returnValue;
 }
