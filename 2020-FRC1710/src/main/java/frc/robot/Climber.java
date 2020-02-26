@@ -27,10 +27,10 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 public class Climber {
     public static TalonSRX climb1, climb2;
-    public static double hexZero, hexPos;
+    public static double hexZero, hexPos, toggle;
     public static ErrorCode zero;
     public static Compressor compressor;
-    public static DoubleSolenoid brake;
+    public static DoubleSolenoid brake, shooter1, shooter2;
     public static PowerDistributionPanel myPDP;
     public static void climberInit(){
         climb1 = new TalonSRX(5);
@@ -41,8 +41,10 @@ public class Climber {
         climb2.setSelectedSensorPosition(0,0,0);
         climb2.follow(climb1);
         brake = new DoubleSolenoid(51, 1, 6);
+        //shooter1 = new DoubleSolenoid(51, 1, 6);
+        //shooter2 = new DoubleSolenoid(51, 1, 6);
         myPDP = new PowerDistributionPanel();
-        
+        toggle = 1;
     
     // compressor
         //compressor = new Compressor(51);
@@ -55,7 +57,13 @@ public class Climber {
         SmartDashboard.putNumber("raw",  hexPos);
         SmartDashboard.putNumber("current draw from climb motors", myPDP.getCurrent(11));
         
-        if (brakeBol) { brake.set(Value.kForward);} else {brake.set(Value.kReverse);}
-
+        if (brakeBol) {toggle = toggle * -1; } 
+        if(toggle == -1){
+            brake.set(Value.kForward);
+        } else {
+            brake.set(Value.kReverse);
+        }
+        
+        
     }
 }

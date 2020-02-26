@@ -33,7 +33,7 @@ public class Intake {
      *creates the motor instances
      **/
     public static void intakeInit(){
-        // m_intake = new TalonSRX(10);
+        m_intake = new TalonSRX(10);
         // m_indexer = new TalonSRX(15);
         m_elevatorONE = new TalonSRX(12);
         m_elevator = new TalonSRX(13);
@@ -46,16 +46,34 @@ public class Intake {
      **/
     public static void gIntake(boolean IsOn){
         if(IsOn == true){
-            // s_intakeMaster.set(Value.kForward);
+            //s_intakeMaster.set(Value.kForward);
             // s_intakeSlave.set(Value.kReverse);
-            // m_intake.set(ControlMode.PercentOutput, -1);
+             m_intake.set(ControlMode.PercentOutput, 1);
+            // m_indexer.set(ControlMode.PercentOutput, 1);
+            // m_elevator.set(ControlMode.PercentOutput, 1);
+            // m_elevatorONE.set(ControlMode.PercentOutput, 1);
+        } else {
+            // s_intakeMaster.set(Value.kReverse);
+            // s_intakeSlave.set(Value.kForward);
+            m_intake.set(ControlMode.PercentOutput, 0);
+            // m_indexer.set(ControlMode.PercentOutput, 0);
+            // m_elevator.set(ControlMode.PercentOutput, 0);
+            // m_elevatorONE.set(ControlMode.PercentOutput, 0);
+        }
+        
+    }
+    public static void elevator(boolean IsOn){
+        if(IsOn == true){
+            //s_intakeMaster.set(Value.kForward);
+            // s_intakeSlave.set(Value.kReverse);
+            // m_intake.set(ControlMode.PercentOutput, 1);
             // m_indexer.set(ControlMode.PercentOutput, 1);
             m_elevator.set(ControlMode.PercentOutput, 1);
             m_elevatorONE.set(ControlMode.PercentOutput, 1);
         } else {
             // s_intakeMaster.set(Value.kReverse);
             // s_intakeSlave.set(Value.kForward);
-            // m_intake.set(ControlMode.PercentOutput, 0);
+           // m_intake.set(ControlMode.PercentOutput, 0);
             // m_indexer.set(ControlMode.PercentOutput, 0);
             m_elevator.set(ControlMode.PercentOutput, 0);
             m_elevatorONE.set(ControlMode.PercentOutput, 0);

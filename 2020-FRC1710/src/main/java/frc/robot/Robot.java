@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -37,6 +38,7 @@ public class Robot extends TimedRobot {
   public static AHRS Navx;
   public static DigitalInput LidarPWMSlot;
   public static Compressor comp;
+  public static Timer autoTimer, timer;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -56,7 +58,10 @@ public class Robot extends TimedRobot {
     Intake.intakeInit();
     comp = new Compressor(50);
     Climber.climberInit();
-    Flywheel.initialize();
+    Flywheel.initShooter();
+    autoAim.initAutoAim();
+    Timer timer = new Timer();
+    Timer autoTimer = new Timer();
     //LEDs.setIncramentBall();
     
   }
@@ -96,14 +101,19 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
+    SmartDashboard.putNumber("Heeee", DistanceLidar.getDistance()/2.54);
+    if(DistanceLidar.getDistance()/2.54 > 27 && DistanceLidar.getDistance()/2.54 < 35){
+      autoTimer.start();
+      Drive.arcadeDrive(0, 0, false);
+      if(autoTimer.hasPeriodPassed(3)){
+        Intake.elevator(true);
+      }
+      Flywheel.setShooterSpeeds(8000, 8000, true);
+      Drive.arcadeDrive(0, 0, false);
+    } else {
+      Intake.elevator(false);
+      Flywheel.setShooterSpeeds(8000, 8000, false);
+      Drive.arcadeDrive(.5, 0, false);
     }
   }
 
@@ -112,24 +122,38 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+     //timer.start();
      double xAxisDemand = DriveStick.getX(Hand.kRight);
      double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
      boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
      double rTrig = DriveStick.getTriggerAxis(Hand.kRight);
      double lTrig = DriveStick.getTriggerAxis(Hand.kLeft);
-     boolean xButton = DriveStick.getXButton();
+     boolean xButton = DriveStick.getXButtonPressed();
      boolean yButton = DriveStick.getYButton();
+     boolean bButton = DriveStick.getBButton();
+     boolean rBumper = DriveStick.getBumper(Hand.kRight);
+     boolean lBumper = DriveStick.getBumper(Hand.kLeft);
+     boolean mechXbutton = MechStick.getXButton();
     // SmartDashboard.putBoolean("is shifting?", xAxsisButton);
-    Climber.climb(rTrig-lTrig, xButton);
-    Drive.arcadeDrive(yAxisDemand, xAxisDemand * .5, xAxsisButton);
-    Intake.gIntake(yButton);
-  
-    comp.setClosedLoopControl(DriveStick.getAButton());
+    //if(timer.hasPeriodPassed(90)){
+      Climber.climb(rTrig-lTrig, xButton);
+    // } else {
+    //   Climber.climb(0, xButton);
+    // }
+    
+    Drive.arcadeDrive(yAxisDemand, xAxisDemand, xAxsisButton);
+    Intake.gIntake(lBumper);
+    Intake.elevator(yButton);
+    Flywheel.setShooterSpeeds(8000, 8000, rBumper);
+    SmartDashboard.putNumber("flywheelSpeeed", Flywheel.getFlySpeed());
+    comp.setClosedLoopControl(MechStick.getBButton()|| comp.getPressureSwitchValue());
+    autoAim.aim();
     SmartDashboard.putNumber("lidar distance in inches",DistanceLidar.getDistance()/2.54); //the /2.54 is the conversion factor for cm to inches
     
+
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
-      if(gameData.length()>0){
+      if(gameData. length()>0){
         switch (gameData.charAt(0)){
           case 'B':
           break;

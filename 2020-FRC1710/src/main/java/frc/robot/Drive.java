@@ -34,8 +34,8 @@ public class Drive {
         L2.restoreFactoryDefaults();
         L1.restoreFactoryDefaults();
         R2.restoreFactoryDefaults();
-        turnFactor = .25;
-        forwardFactor = .5;
+        turnFactor = .3;
+        forwardFactor = .4;
         leftIN = new InputSmoother(1, -1);
         rightIN = new InputSmoother(1, -1);
         R2.follow(R1);
@@ -47,13 +47,14 @@ public class Drive {
         L2.setIdleMode(IdleMode.kBrake);
     }
     public static void arcadeDrive(double forwardPower, double turnPower, boolean Boost){
-        double speedScale = 0.25;
+        double speedScale = 0.4;
         if(Boost){
             speedScale = 1.0;
         } else {
-            speedScale = 0.25;
+            speedScale = 0.4;
         }
         forwardPower = speedScale * forwardPower;
+        turnPower = turnPower * turnFactor;
         SmartDashboard.putNumber("FWD POWER!", forwardPower);
         SmartDashboard.putNumber("smooth FWD POWER!", leftIN.smoothInput(forwardPower));
         //SmartDashboard.putNumber(   "Velocity_X",           navx.getVelocityX());
@@ -61,5 +62,5 @@ public class Drive {
         L1.set(leftIN.smoothInput(turnPower + forwardPower));
         R1.set(rightIN.smoothInput(turnPower - forwardPower));
     }
-
+   
 }

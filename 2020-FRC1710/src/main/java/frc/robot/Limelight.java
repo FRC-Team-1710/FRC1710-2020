@@ -23,7 +23,7 @@ public class Limelight {
     public NetworkTable shooterTable;
     public NetworkTable intakeTable;
     public static void initShooter() {
-        Flywheel.initialize();
+        Flywheel.initShooter();
     }
 
     public static void limelight_periodic() {
@@ -62,7 +62,7 @@ public class Limelight {
             } else if (rpm > 5700){
                 rpm = 5700;
             }
-            Flywheel.flywheel_periodic(rpm);
+            Flywheel.setShooterSpeeds(0, 0, false);
             SmartDashboard.putNumber("ShooterRPM", rpm);
         } else {
             rpm = 0;
