@@ -12,14 +12,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * Limelight class. 
- * Depends on the Flywheel.java class in order to accomplish auto-shooting.
+ * Depends on the Flywheel.java and basically wraps it in order to complete the Shooter subsystem.
  */
 public class Limelight {
     //shooting anywhere on field
     public static double rpm;
     public NetworkTable shooterTable;
     public NetworkTable intakeTable;
-    
+
     public static void initShooter() {
         Flywheel.initShooter();
     }

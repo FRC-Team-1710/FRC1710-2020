@@ -60,7 +60,7 @@ public class Drive {
         L2.setIdleMode(IdleMode.kBrake);
     }
     public static void arcadeDrive(double forwardPower, double turnPower, boolean boost){
-        double forward = forwardPower * boost ? BOOST_FACTOR : SPEED_FACTOR;
+        double forward = forwardPower * (boost ? BOOST_FACTOR : SPEED_FACTOR);
         double turn = turnPower * TURN_FACTOR;
 
         L1.set(turn + forward);
