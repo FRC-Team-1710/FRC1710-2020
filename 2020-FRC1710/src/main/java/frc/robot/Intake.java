@@ -4,83 +4,47 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.ControlFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 /**
- * Add your docs here.
+ * Controls the intake system of the robot.
  */
 public class Intake {
-    public static DoubleSolenoid s_intakeMaster, s_intakeSlave;
-    public static TalonSRX  m_intake, m_elevator, m_indexer, m_elevatorONE;
+    public static TalonSRX m_intake, m_elevator_second, m_elevator_first;
+
+    private static final double INTAKE_ON_SPEED = 1.00;
+    private static final double INTAKE_OFF_SPEED = 0.0;
+
+    private static final double ELEVATOR_ON_SPEED = 1.00;
+    private static final double ELEVATOR_OFF_SPEED = 0.0;
+
     /**
-     *creates the motor instances
-     **/
-    public static void intakeInit(){
+     * Initalizes the intake motor controllers
+     */
+    public static void intakeInit() {
         m_intake = new TalonSRX(10);
-        // m_indexer = new TalonSRX(15);
-        m_elevatorONE = new TalonSRX(12);
-        m_elevator = new TalonSRX(13);
-        // s_intakeMaster = new DoubleSolenoid(50, 0, 7);
-        // s_intakeSlave = new DoubleSolenoid(50, 1, 6);
+        m_elevator_first = new TalonSRX(12);
+        m_elevator_second = new TalonSRX(13);
+
+        // Group the elevator motors together.
+        m_elevator_second.follow(m_elevator_first);
     }
 
     /**
-     *when true this extends the ground intake and runs things to get balls up the elevator
-     **/
-    public static void gIntake(boolean IsOn){
-        if(IsOn == true){
-            //s_intakeMaster.set(Value.kForward);
-            // s_intakeSlave.set(Value.kReverse);
-             m_intake.set(ControlMode.PercentOutput, 1);
-            // m_indexer.set(ControlMode.PercentOutput, 1);
-            // m_elevator.set(ControlMode.PercentOutput, 1);
-            // m_elevatorONE.set(ControlMode.PercentOutput, 1);
-        } else {
-            // s_intakeMaster.set(Value.kReverse);
-            // s_intakeSlave.set(Value.kForward);
-            m_intake.set(ControlMode.PercentOutput, 0);
-            // m_indexer.set(ControlMode.PercentOutput, 0);
-            // m_elevator.set(ControlMode.PercentOutput, 0);
-            // m_elevatorONE.set(ControlMode.PercentOutput, 0);
-        }
-        
-    }
-    public static void elevator(boolean IsOn){
-        if(IsOn == true){
-            //s_intakeMaster.set(Value.kForward);
-            // s_intakeSlave.set(Value.kReverse);
-            // m_intake.set(ControlMode.PercentOutput, 1);
-            // m_indexer.set(ControlMode.PercentOutput, 1);
-            m_elevator.set(ControlMode.PercentOutput, 1);
-            m_elevatorONE.set(ControlMode.PercentOutput, 1);
-        } else {
-            // s_intakeMaster.set(Value.kReverse);
-            // s_intakeSlave.set(Value.kForward);
-           // m_intake.set(ControlMode.PercentOutput, 0);
-            // m_indexer.set(ControlMode.PercentOutput, 0);
-            m_elevator.set(ControlMode.PercentOutput, 0);
-            m_elevatorONE.set(ControlMode.PercentOutput, 0);
-        }
-        
+     * Turns on or off the intake depending on the parameter given
+     * @param isOn (boolean) sets the intake on or off.
+     */
+    public static void setIntake(final boolean isOn) {
+        m_intake.set(ControlMode.PercentOutput, isOn ? INTAKE_ON_SPEED : INTAKE_OFF_SPEED);
     }
 
-    
-
+    /**
+     * Turns on or off the elevator depending on the parameter given
+     * @param isOn (boolean) sets the intake on or off.
+     */
+    public static void setElevator(final boolean isOn) {
+        m_elevator_first.set(ControlMode.PercentOutput, isOn ? ELEVATOR_ON_SPEED : ELEVATOR_OFF_SPEED);
+    }
 }
