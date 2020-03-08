@@ -19,17 +19,17 @@ public class autoAim {
 
     public static void aim() {
         // https://docs.wpilib.org/en/latest/docs/software/networktables/networktables-intro.html
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        NetworkTableEntry tx = table.getEntry("tx");
-        NetworkTableEntry ty = table.getEntry("ty");
-        NetworkTableEntry ta = table.getEntry("ta");
-        NetworkTableEntry tv = table.getEntry("tv");
+        final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+        final NetworkTableEntry tx = table.getEntry("tx");
+        final NetworkTableEntry ty = table.getEntry("ty");
+        final NetworkTableEntry ta = table.getEntry("ta");
+        final NetworkTableEntry tv = table.getEntry("tv");
 
         // Read data from tables
-        double x = tx.getDouble(0.0);
-        double y = ty.getDouble(0.0);
-        double v = tv.getDouble(0.0);
-        double area = ta.getDouble(0.0);
+        final double x = tx.getDouble(0.0);
+        final double y = ty.getDouble(0.0);
+        final double v = tv.getDouble(0.0);
+        final double area = ta.getDouble(0.0);
 
         // Check if there is only one target from limelight data.
         SmartDashboard.putBoolean("target?", v == 1);
