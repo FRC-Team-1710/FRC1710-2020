@@ -59,7 +59,6 @@ public class Robot extends TimedRobot {
     comp = new Compressor(50);
     Climber.climberInit();
     Flywheel.initShooter();
-    autoAim.initAutoAim();
     Timer timer = new Timer();
     Timer autoTimer = new Timer();
     //LEDs.setIncramentBall();
