@@ -9,19 +9,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /**
- * Add your docs here.
+ * Limelight class. 
+ * Depends on the Flywheel.java class in order to accomplish auto-shooting.
  */
-
 public class Limelight {
     //shooting anywhere on field
     public static double rpm;
     public NetworkTable shooterTable;
     public NetworkTable intakeTable;
+    
     public static void initShooter() {
         Flywheel.initShooter();
     }
@@ -51,17 +49,18 @@ public class Limelight {
         SmartDashboard.putNumber("ShooterDistance", d);
         double v;
 
-        if (validShooter == 1){
+        if (validShooter == 1) {
         //figuring out what rpm for flywheel
             if (d >= 110 && d <= 180) {
                 v = 0.0454 * d * d - 14.899 * d + 1610.3;
                 rpm = v * 60 / (3.1415 * 4); //c of wheel (in)
-            } else if (d >= 190 && d <= 450){
+            } else if (d >= 190 && d <= 450) {
                 v = 0.377 * d + 313.75;
                 rpm = v * 60 / (3.1415 * 4); //c of wheel (in)
-            } else if (rpm > 5700){
+            } else if (rpm > 5700) {
                 rpm = 5700;
             }
+
             Flywheel.setShooterSpeeds(0, 0, false);
             SmartDashboard.putNumber("ShooterRPM", rpm);
         } else {

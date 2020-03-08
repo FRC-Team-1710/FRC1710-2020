@@ -1,21 +1,18 @@
 
 package frc.robot;
 
-/**
- * Add your docs here.
- */
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
-
+/**
+ * Ultrasonic class used to find distance from shooet to wall.
+ */
 public class UltrasonicSensor {
     public static AnalogInput m_US;
     public static void initUltras(){
         m_US = new AnalogInput(0);
     }
+
     public static void UltrasVoid(){
         double sensorValue = m_US.getVoltage();
         final double scaleFactor = 1/(5./1024.); //scale converting voltage to distance

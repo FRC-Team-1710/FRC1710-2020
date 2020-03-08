@@ -15,7 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Controls the flywheel on the shooter. Personally would name this Shooter.java
+ * Controls the flywheel on the shooter. This is used by the Limelight class in order to accomplish autoshooting.
  */
 public class Flywheel {
     public static CANSparkMax m_flyOne, m_flyTwo, m_feeder;

@@ -8,7 +8,8 @@
 package frc.robot;
 
 /**
- * Add your docs here.
+ * Custom PID Class
+ * References: https://github.com/GearCatsProgramming/2018-Iterative-Robot/blob/master/src/org/usfirst/frc/team6500/robot/auto/MiniPID.java
  */
 public class MiniPID{
 	//**********************************

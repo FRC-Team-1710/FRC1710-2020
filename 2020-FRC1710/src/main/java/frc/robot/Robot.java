@@ -10,7 +10,6 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -48,7 +47,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    AHRS Navx = new AHRS();
+    Navx = new AHRS();
     Drive.Driveinit();
     //LEDs.initLEDs();
     DriveStick = new XboxController(0);
@@ -59,8 +58,8 @@ public class Robot extends TimedRobot {
     comp = new Compressor(50);
     Climber.climberInit();
     Flywheel.initShooter();
-    Timer timer = new Timer();
-    Timer autoTimer = new Timer();
+    timer = new Timer();
+    autoTimer = new Timer();
     //LEDs.setIncramentBall();
     
   }
@@ -121,24 +120,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-     //timer.start();
-     double xAxisDemand = DriveStick.getX(Hand.kRight);
-     double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
-     boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
-     double rTrig = DriveStick.getTriggerAxis(Hand.kRight);
-     double lTrig = DriveStick.getTriggerAxis(Hand.kLeft);
-     boolean xButton = DriveStick.getXButtonPressed();
-     boolean yButton = DriveStick.getYButton();
-     boolean bButton = DriveStick.getBButton();
-     boolean rBumper = DriveStick.getBumper(Hand.kRight);
-     boolean lBumper = DriveStick.getBumper(Hand.kLeft);
-     boolean mechXbutton = MechStick.getXButton();
-    // SmartDashboard.putBoolean("is shifting?", xAxsisButton);
-    //if(timer.hasPeriodPassed(90)){
-      Climber.setClimber(rTrig-lTrig, xButton);
-    // } else {
-    //   Climber.climb(0, xButton);
-    // }
+    double xAxisDemand = DriveStick.getX(Hand.kRight);
+    double yAxisDemand = DriveStick.getY(Hand.kLeft) * -1;
+    boolean xAxsisButton = DriveStick.getStickButton(Hand.kRight);
+    double rTrig = DriveStick.getTriggerAxis(Hand.kRight);
+    double lTrig = DriveStick.getTriggerAxis(Hand.kLeft);
+    boolean xButton = DriveStick.getXButtonPressed();
+    boolean yButton = DriveStick.getYButton();
+    boolean rBumper = DriveStick.getBumper(Hand.kRight);
+    boolean lBumper = DriveStick.getBumper(Hand.kLeft);
+    Climber.setClimber(rTrig-lTrig, xButton);
     
     Drive.arcadeDrive(yAxisDemand, xAxisDemand, xAxsisButton);
     Intake.setIntake(lBumper);
@@ -148,7 +139,6 @@ public class Robot extends TimedRobot {
     comp.setClosedLoopControl(MechStick.getBButton()|| comp.getPressureSwitchValue());
     autoAim.aim();
     SmartDashboard.putNumber("lidar distance in inches",DistanceLidar.getDistance()/2.54); //the /2.54 is the conversion factor for cm to inches
-    
 
     String gameData; 
       gameData = DriverStation.getInstance().getGameSpecificMessage();
@@ -166,6 +156,7 @@ public class Robot extends TimedRobot {
           break;
         }
       }
+
       //Limelight.limelight_periodic();
     
       // if(driverController.getBumperPressed(Hand.kRight)) {
@@ -175,6 +166,7 @@ public class Robot extends TimedRobot {
       // }else if(driverController.getBButtonPressed()){
       //   Limelight.rpm = 0;
       // }
+
       // Flywheel.flywheel_periodic(Limelight.rpm);
     }
 
