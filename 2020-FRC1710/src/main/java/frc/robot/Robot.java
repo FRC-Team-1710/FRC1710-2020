@@ -105,12 +105,12 @@ public class Robot extends TimedRobot {
       autoTimer.start();
       Drive.arcadeDrive(0, 0, false);
       if(autoTimer.hasPeriodPassed(3)){
-        Intake.elevator(true);
+        Intake.setElevator(true);
       }
       Flywheel.setShooterSpeeds(8000, 8000, true);
       Drive.arcadeDrive(0, 0, false);
     } else {
-      Intake.elevator(false);
+      Intake.setElevator(false);
       Flywheel.setShooterSpeeds(8000, 8000, false);
       Drive.arcadeDrive(.5, 0, false);
     }
@@ -135,14 +135,14 @@ public class Robot extends TimedRobot {
      boolean mechXbutton = MechStick.getXButton();
     // SmartDashboard.putBoolean("is shifting?", xAxsisButton);
     //if(timer.hasPeriodPassed(90)){
-      Climber.climb(rTrig-lTrig, xButton);
+      Climber.setClimber(rTrig-lTrig, xButton);
     // } else {
     //   Climber.climb(0, xButton);
     // }
     
     Drive.arcadeDrive(yAxisDemand, xAxisDemand, xAxsisButton);
-    Intake.gIntake(lBumper);
-    Intake.elevator(yButton);
+    Intake.setIntake(lBumper);
+    Intake.setElevator(yButton);
     Flywheel.setShooterSpeeds(8000, 8000, rBumper);
     SmartDashboard.putNumber("flywheelSpeeed", Flywheel.getFlySpeed());
     comp.setClosedLoopControl(MechStick.getBButton()|| comp.getPressureSwitchValue());
